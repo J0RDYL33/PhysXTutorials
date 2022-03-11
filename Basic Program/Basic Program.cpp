@@ -18,6 +18,12 @@ PxPvd*  pvd = 0;
 //simulation objects
 PxScene* scene;
 PxRigidDynamic* box;
+PxRigidDynamic* box2;
+PxRigidDynamic* box3;
+PxRigidStatic* floorBox1;
+PxRigidDynamic* floorBox2;
+PxRigidDynamic* floorBox3;
+PxRigidDynamic* capsule;
 PxRigidStatic* plane;
 
 int numberOfLoops = 0;
@@ -100,23 +106,61 @@ void InitScene()
 	scene->setGravity(PxVec3(0.f, -9.81f, 0.f));
 
 	//materials
-	PxMaterial* default_material = physics->createMaterial(0.f, 0.f, 0.f);   //static friction, dynamic friction, restitution
+	//Set dynamic friction to 0.07 for it to move exactly 1 meter
+	PxMaterial* default_material = physics->createMaterial(0.f, 0.1f, .7f);   //static friction, dynamic friction, restitution
+	PxMaterial* floor_material = physics->createMaterial(0.f, 0.f, .0f);
 
 	//create a static plane (XZ)
 	plane = PxCreatePlane(*physics, PxPlane(PxVec3(0.f, 1.f, 0.f), 0.f), *default_material);
 	scene->addActor(*plane);
 
+	//Static box creations
+
+	floorBox1 = physics->createRigidStatic(PxTransform(PxVec3(0.f, .5f, 0.f)));
+	floorBox2 = physics->createRigidDynamic(PxTransform(PxVec3(5.f, .5f, 0.f)));
+	floorBox3 = physics->createRigidDynamic(PxTransform(PxVec3(10.f, .5f, 0.f)));
+
+	capsule = physics->createRigidDynamic(PxTransform(PxVec3(0.f, 15.f, 0.f)));
+
+	floorBox3->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, true);
+
+	floorBox1->createShape(PxBoxGeometry(.5f, .5f, .5f), *floor_material);
+	floorBox2->createShape(PxBoxGeometry(.5f, .5f, .5f), *floor_material);
+	floorBox3->createShape(PxBoxGeometry(.5f, .5f, .5f), *floor_material);
+
 	//create a dynamic actor and place it 10 m above the ground
-	box = physics->createRigidDynamic(PxTransform(PxVec3(0.f, 10.5f, 0.f)));
+	box = physics->createRigidDynamic(PxTransform(PxVec3(0.f, 10.f, 0.f)));
+	box2 = physics->createRigidDynamic(PxTransform(PxVec3(5.f, 10.f, 0.f)));
+	box3 = physics->createRigidDynamic(PxTransform(PxVec3(10.f, 10.f, 0.f)));
+
+	//Capsule creation 15 m above the ground
+	
+	capsule->createShape(PxCapsuleGeometry(.5f, .5f), *floor_material);
 	//create a box shape of 1m x 1m x 1m size (values are provided in halves)
 	box->createShape(PxBoxGeometry(.5f, .5f, .5f), *default_material);
+	box2->createShape(PxBoxGeometry(.5f, .5f, .5f), *default_material);
+	box3->createShape(PxBoxGeometry(.5f, .5f, .5f), *default_material);
 	//update the mass of the box
-	PxRigidBodyExt::updateMassAndInertia(*box, 1.f); //density of 1kg/m^3
+	PxRigidBodyExt::updateMassAndInertia(*box, 1.f);
+	PxRigidBodyExt::updateMassAndInertia(*box2, 1.f);
+	PxRigidBodyExt::updateMassAndInertia(*box3, 1.f);//density of 1kg/m^3
+	PxRigidBodyExt::updateMassAndInertia(*floorBox2, 1.f);
+	PxRigidBodyExt::updateMassAndInertia(*floorBox3, 1.f);
+	PxRigidBodyExt::updateMassAndInertia(*capsule, .5f);
 	scene->addActor(*box);
+	scene->addActor(*box2);
+	scene->addActor(*box3);
+	scene->addActor(*floorBox1);
+	scene->addActor(*floorBox2);
+	scene->addActor(*floorBox3);
+	scene->addActor(*capsule);
 
-	//PxVec3 newForce;
-	//newForce.x = 100;
-	//box->addForce(newForce);
+	//Add 100N of force on the X
+	/*PxVec3 newForce;
+	newForce.x = 100;
+	newForce.y = 0;
+	newForce.z = 0;
+	box->addForce(newForce);*/
 }
 
 void MoveBox()
@@ -174,19 +218,24 @@ int main()
 	//simulate until the 'Esc' is pressed
 	while (!GetAsyncKeyState(VK_ESCAPE))
 	{
-		//'visualise' position and velocity of the box
-		PxVec3 position = box->getGlobalPose().p;
-		PxVec3 velocity = box->getLinearVelocity();
-		cout << setiosflags(ios::fixed) << setprecision(2) << "x=" << position.x << 
-			", y=" << position.y << ", z=" << position.z << ",  ";
-		cout << setiosflags(ios::fixed) << setprecision(2) << "vx=" << velocity.x << 
-			", vy=" << velocity.y << ", vz=" << velocity.z << ", number of loops = " << numberOfLoops << endl;
+		if (box->isSleeping() == false)
+		{
+			//'visualise' position and velocity of the box
+			PxVec3 position = box->getGlobalPose().p;
+			PxVec3 velocity = box->getLinearVelocity();
+			cout << setiosflags(ios::fixed) << setprecision(2) << "x=" << position.x <<
+				", y=" << position.y << ", z=" << position.z << ",  ";
+			cout << setiosflags(ios::fixed) << setprecision(2) << "vx=" << velocity.x <<
+				", vy=" << velocity.y << ", vz=" << velocity.z << ", number of loops = " << numberOfLoops << endl;
+		}
+		else if (box->isSleeping() == true)
+			cout << "Sleeping!" << endl;
 
 		//perform a single simulation step
 		Update(delta_time);
 		
 		//introduce 100ms delay for easier visual analysis of the results
-		Sleep(100);
+		Sleep(5);
 	}
 
 	//Release all resources
