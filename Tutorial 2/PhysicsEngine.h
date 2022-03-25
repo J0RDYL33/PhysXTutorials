@@ -78,6 +78,16 @@ namespace PhysicsEngine
 		void SetKinematic(bool value, PxU32 index=-1);
 	};
 
+	class CompoundObject : public DynamicActor
+	{
+	public:
+		CompoundObject(const PxTransform& pose);
+
+		~CompoundObject();
+
+		
+	};
+
 	class StaticActor : public Actor
 	{
 	public:

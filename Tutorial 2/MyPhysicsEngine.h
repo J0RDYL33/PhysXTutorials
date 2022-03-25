@@ -41,6 +41,8 @@ namespace PhysicsEngine
 	{
 		Plane* plane;
 		Box* box;
+		Box* box2;
+		Actor* boxArr[100];
 
 	public:
 		///A custom scene class
@@ -48,6 +50,8 @@ namespace PhysicsEngine
 		{
 			px_scene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
 			px_scene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES, 1.0f);
+			px_scene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f);
+			px_scene->setVisualizationParameter(PxVisualizationParameter::eBODY_LIN_VELOCITY, 1.0f);
 		}
 
 		//Custom scene initialisation
@@ -61,9 +65,28 @@ namespace PhysicsEngine
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
-			box = new Box(PxTransform(PxVec3(.0f,10.f,.0f)));
+			box = new Box();
+			box->GetShape()->setLocalPose(PxTransform(PxVec3(.0f, 3.f, .0f), PxQuat(1.f, PxVec3(.0f, .0f, .25f*PxPi))));
 			box->Color(color_palette[0]);
+			
 			Add(box);
+
+			box2 = new Box(PxTransform(PxVec3(.0f, 10.f, 5.f)));
+			box2->Color(PxVec3(0.f/255.f, 100.f / 255.f, 100.f / 255.f));
+			Add(box2);
+
+			CompoundObject* box3 = new CompoundObject(PxTransform(PxVec3(10.f,10.f,10.f)));
+			box3->Color(PxVec3(0.f / 255.f, 100.f / 255.f, 100.f / 255.f), 0);
+			box3->Color(PxVec3(100.f / 255.f, 0.f / 255.f, 100.f / 255.f), 1);
+			Add(box3);
+
+			for (int i = 0; i < 100; i++)
+			{
+				boxArr[i] = new Sphere(PxTransform(PxVec3(i*.1f, i * 3.f, .0f)));
+				//boxArr[i]->GetShape()->setLocalPose(PxTransform(PxVec3(.0f, i*3.f, .0f)));
+				boxArr[i]->Color(PxVec3(0.f / 255.f, (1.f *i) / 255.f, (1.f * i) / 255.f));
+				Add(boxArr[i]);
+			}
 		}
 
 		//Custom udpate function

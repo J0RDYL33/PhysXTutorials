@@ -65,7 +65,7 @@ namespace PhysicsEngine
 			throw new Exception("PhysicsEngine::PxInit, Could not initialise the cooking component.");
 
 		//create a deafult material
-		CreateMaterial();
+		CreateMaterial(.0f,.0f,.4f);
 	}
 
 	void PxRelease()
@@ -187,6 +187,19 @@ namespace PhysicsEngine
 	}
 
 	DynamicActor::~DynamicActor()
+	{
+		for (unsigned int i = 0; i < colors.size(); i++)
+			delete (UserData*)GetShape(i)->userData;
+	}
+
+	CompoundObject::CompoundObject(const PxTransform& pose) : DynamicActor(pose)
+	{
+		CreateShape(PxBoxGeometry(1.f,1.f,1.f), 1.0f );
+		CreateShape(PxBoxGeometry(1.f, 1.f, 1.f), 1.0f);
+		GetShape(1)->setLocalPose(PxTransform(PxVec3(5.f, .0f, .0f)));
+	}
+
+	CompoundObject::~CompoundObject()
 	{
 		for (unsigned int i = 0; i < colors.size(); i++)
 			delete (UserData*)GetShape(i)->userData;
