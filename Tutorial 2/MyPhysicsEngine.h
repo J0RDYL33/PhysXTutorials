@@ -43,6 +43,7 @@ namespace PhysicsEngine
 		Box* box;
 		Box* box2;
 		Actor* boxArr[100];
+		CompoundObject* box3;
 
 	public:
 		///A custom scene class
@@ -75,7 +76,7 @@ namespace PhysicsEngine
 			box2->Color(PxVec3(0.f/255.f, 100.f / 255.f, 100.f / 255.f));
 			Add(box2);
 
-			CompoundObject* box3 = new CompoundObject(PxTransform(PxVec3(10.f,10.f,10.f)));
+			box3 = new CompoundObject(PxTransform(PxVec3(10.f,10.f,10.f)));
 			box3->Color(PxVec3(0.f / 255.f, 100.f / 255.f, 100.f / 255.f), 0);
 			box3->Color(PxVec3(100.f / 255.f, 0.f / 255.f, 100.f / 255.f), 1);
 			Add(box3);
@@ -92,6 +93,16 @@ namespace PhysicsEngine
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
+			PxTransform newPose = ((PxRigidBody*)box3->Get())->getGlobalPose();
+			PxTransform newerPose = ((PxRigidActor*)box3->Get())->getGlobalPose();
+			//PxTransform newPose = box3->getGlobalPose();
+			PxVec3 pos = newPose.p;
+
+			pos.x += .1f;
+			newerPose.p = pos;
+
+			((PxRigidActor*)box3->Get())->setGlobalPose(newerPose);
+			//box3->GetShape()->setLocalPose(newPose);
 		}
 	};
 }
