@@ -42,8 +42,10 @@ namespace PhysicsEngine
 		Plane* plane;
 		Box* box;
 		Box* box2;
-		Actor* boxArr[100];
+		Box* boxArr[10];
 		CompoundObject* box3;
+		Box* boxAngle;
+		float boxRotator = .1f;
 
 	public:
 		///A custom scene class
@@ -60,18 +62,17 @@ namespace PhysicsEngine
 		{
 			SetVisualisation();			
 
-			GetMaterial()->setDynamicFriction(.2f);
+			GetMaterial()->setDynamicFriction(1.f);
 
 			plane = new Plane();
 			plane->Color(PxVec3(210.f/255.f,210.f/255.f,210.f/255.f));
 			Add(plane);
 
 			box = new Box();
-			box->GetShape()->setLocalPose(PxTransform(PxVec3(.0f, 3.f, .0f), PxQuat(1.f, PxVec3(.0f, .0f, .25f*PxPi))));
+			box->GetShape()->setLocalPose(PxTransform(PxVec3(5.0f, 3.f, .0f)));
 			box->Color(color_palette[0]);
-			
 			Add(box);
-
+			/*
 			box2 = new Box(PxTransform(PxVec3(.0f, 10.f, 5.f)));
 			box2->Color(PxVec3(0.f/255.f, 100.f / 255.f, 100.f / 255.f));
 			Add(box2);
@@ -80,20 +81,27 @@ namespace PhysicsEngine
 			box3->Color(PxVec3(0.f / 255.f, 100.f / 255.f, 100.f / 255.f), 0);
 			box3->Color(PxVec3(100.f / 255.f, 0.f / 255.f, 100.f / 255.f), 1);
 			Add(box3);
-
-			for (int i = 0; i < 100; i++)
+			*/
+			for (int i = 0; i < 10; i++)
 			{
-				boxArr[i] = new Sphere(PxTransform(PxVec3(i*.1f, i * 3.f, .0f)));
+				boxArr[i] = new Box(PxTransform(PxVec3(.0f, i * 1.5f, .0f)));
+				boxArr[i]->GetShape()->setLocalPose(PxTransform(PxQuat(.2f*i, PxVec3(.0f, 1.0f, .0f))));
 				//boxArr[i]->GetShape()->setLocalPose(PxTransform(PxVec3(.0f, i*3.f, .0f)));
-				boxArr[i]->Color(PxVec3(0.f / 255.f, (1.f *i) / 255.f, (1.f * i) / 255.f));
+				boxArr[i]->Color(PxVec3(0.f / 255.f, (20.f *i) / 255.f, (20.f * i) / 255.f));
 				Add(boxArr[i]);
 			}
+
+			/*boxAngle = new Box(PxTransform(PxVec3(5.5f, .5f, .5f), PxQuat(1.f, PxVec3(1.f, .0f, .0f))));
+			Add(boxAngle);*/
 		}
 
 		//Custom udpate function
 		virtual void CustomUpdate() 
 		{
-			PxTransform newPose = ((PxRigidBody*)box3->Get())->getGlobalPose();
+			
+			box->GetShape()->setLocalPose(PxTransform(PxQuat(boxRotator, PxVec3(.0f, 1.f, .0f))));
+			boxRotator += 0.1f;
+			/*PxTransform newPose = ((PxRigidBody*)box3->Get())->getGlobalPose();
 			PxTransform newerPose = ((PxRigidActor*)box3->Get())->getGlobalPose();
 			//PxTransform newPose = box3->getGlobalPose();
 			PxVec3 pos = newPose.p;
@@ -102,7 +110,7 @@ namespace PhysicsEngine
 			newerPose.p = pos;
 
 			((PxRigidActor*)box3->Get())->setGlobalPose(newerPose);
-			//box3->GetShape()->setLocalPose(newPose);
+			//box3->GetShape()->setLocalPose(newPose);*/
 		}
 	};
 }
