@@ -4,6 +4,7 @@
 
 namespace VisualDebugger
 {
+	
 	using namespace physx;
 
 	///Init visualisation
@@ -11,5 +12,7 @@ namespace VisualDebugger
 
 	///Start visualisation
 	void Start();
+
+	
 }
 

@@ -232,7 +232,8 @@ namespace VisualDebugger
 	{
 		if (!scene->GetSelectedActor())
 			return;
-
+		PxQuat rotation = scene->GetSelectedActor()->getGlobalPose().q;
+		cout << rotation.x << " " << rotation.y << " " << rotation.z << " " << rotation.w << endl;
 		switch (toupper(key))
 		{
 			// Force controls on the selected actor
@@ -243,10 +244,12 @@ namespace VisualDebugger
 			scene->GetSelectedActor()->addForce(PxVec3(0,0,1)*gForceStrength);
 			break;
 		case 'J': //left
-			scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
+			//scene->GetSelectedActor()->addForce(PxVec3(-1,0,0)*gForceStrength);
+			scene->TurnLeft(0.01f);
 			break;
 		case 'L': //right
-			scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);
+			//scene->GetSelectedActor()->addForce(PxVec3(1,0,0)*gForceStrength);
+			scene->TurnLeft(-0.01f);
 			break;
 		case 'U': //up
 			scene->GetSelectedActor()->addForce(PxVec3(0,1,0)*gForceStrength);

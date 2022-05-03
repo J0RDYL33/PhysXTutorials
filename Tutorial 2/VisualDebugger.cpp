@@ -28,6 +28,7 @@ namespace VisualDebugger
 	void KeyRelease(unsigned char key, int x, int y);
 	void KeyPress(unsigned char key, int x, int y);
 
+
 	void motionCallback(int x, int y);
 	void mouseCallback(int button, int state, int x, int y);
 	void exitCallback(void);
@@ -46,6 +47,7 @@ namespace VisualDebugger
 	bool key_state[MAX_KEYS];
 	bool hud_show = true;
 	HUD hud;
+	
 
 	//Init the debugger
 	void Init(const char *window_name, int width, int height)
@@ -109,6 +111,11 @@ namespace VisualDebugger
 		hud.AddLine(HELP, "");
 		hud.AddLine(HELP, " Force (applied to the selected actor)");
 		hud.AddLine(HELP, "    I,K,J,L,U,M - forward,backward,left,right,up,down");
+		hud.AddLine(HELP, "");
+		hud.AddLine(HELP, "Press R to start the domino display");
+		hud.AddLine(HELP, "");
+		hud.AddLine(HELP, "Disruptors");
+		hud.AddLine(HELP, "		X,C,V,B,N - activates different hammers down the domino line");
 		//add a pause screen
 		hud.AddLine(PAUSE, "");
 		hud.AddLine(PAUSE, "");
@@ -119,7 +126,6 @@ namespace VisualDebugger
 		//set font color for all screens
 		hud.Color(PxVec3(0.f,0.f,0.f));
 	}
-
 	//Start the main loop
 	void Start()
 	{ 
@@ -175,6 +181,28 @@ namespace VisualDebugger
 		{
 		//implement your own
 		case 'R':
+			cout << "R has been pressed" << endl;
+			scene->StartTheHammer();
+			break;
+		case 'X': //First hammer
+			scene->StartRuinerHammer(0);
+			cout << "X has been pressed" << endl;
+			break;
+		case 'C': //Second hammer
+			scene->StartRuinerHammer(1);
+			cout << "C has been pressed" << endl;
+			break;
+		case 'V': //Third hammer
+			scene->StartRuinerHammer(2);
+			cout << "V has been pressed" << endl;
+			break;
+		case 'B': //Fourth hammer
+			scene->StartRuinerHammer(3);
+			cout << "B has been pressed" << endl;
+			break;
+		case 'N': //Fifth hammer
+			scene->StartRuinerHammer(4);
+			cout << "N has been pressed" << endl;
 			break;
 		default:
 			break;

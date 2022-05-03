@@ -196,7 +196,7 @@ namespace PhysicsEngine
 	{
 		CreateShape(PxBoxGeometry(.1f,10.f,.1f), 1.0f );
 		CreateShape(PxBoxGeometry(1.f, 1.f, 2.f), 1.0f);
-		GetShape(1)->setLocalPose(PxTransform(PxVec3(.0f, 10.f, .0f)));
+		GetShape(1)->setLocalPose(PxTransform(PxVec3(.0f, 10.f, .1f)));
 	}
 
 	CompoundObject::~CompoundObject()

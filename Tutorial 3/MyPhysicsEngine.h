@@ -187,6 +187,7 @@ namespace PhysicsEngine
 		Plane* plane;
 		Box* box, * box2;
 		MySimulationEventCallback* my_callback;
+		float leftTurnAmount = 0.0f;
 		
 	public:
 		//specify your custom filter shader here
@@ -249,6 +250,13 @@ namespace PhysicsEngine
 		void ExampleKeyPressHandler()
 		{
 			cerr << "I am pressed!" << endl;
+		}
+
+		void TurnLeft(float turnAmount)
+		{
+			leftTurnAmount += turnAmount;
+			box->GetShape()->setLocalPose(PxTransform(PxQuat(leftTurnAmount, PxVec3(0.f, 1.f, 0.f))));
+			cout << leftTurnAmount << endl;
 		}
 	};
 }
