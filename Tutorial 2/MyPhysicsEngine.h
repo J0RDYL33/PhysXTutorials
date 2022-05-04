@@ -120,7 +120,7 @@ namespace PhysicsEngine
 			for (int i = 0; i < 100; i++)
 			{
 				starterDominos[i] = new Domino(PxTransform(PxVec3(5.f, .5f, i * 2.f)));
-				starterDominos[i]->Color(PxVec3(0.f / 255.f, (2.f * i) / 255.f, (2.f * i) / 255.f));
+				starterDominos[i]->Color(PxVec3(0.f / 255.f, (1.5f * i) / 255.f, (2.f * i) / 255.f));
 				Add(starterDominos[i]);
 			}
 
